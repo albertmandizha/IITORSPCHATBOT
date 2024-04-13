@@ -54,3 +54,31 @@ unanswered
 | tag          | VARCHAR(255) |             |                |
 | option_text  | VARCHAR(255) |             |                |
 | option_answer| TEXT         |             |                |
+
+users
+| Field   | Type         | Key         | Extra          |
+|---------|--------------|-------------|----------------|
+| id      | INT          | PRIMARY KEY | AUTO_INCREMENT|
+| email   | VARCHAR(255) |             |                |
+| role_id | INT          |             |                |
+|         | FOREIGN KEY  |             | REFERENCES roles(id) |
+
+manager_assignments
+| Field     | Type | Key         | Extra          |
+|-----------|------|-------------|----------------|
+| id        | INT  | PRIMARY KEY | AUTO_INCREMENT|
+| manager_id| INT  |             |                |
+| user_id   | INT  |             |                |
+|           | FOREIGN KEY  |     | REFERENCES users(id) |
+
+roles
+| Field | Type         | Key         | Extra          |
+|-------|--------------|-------------|----------------|
+| id    | INT          | PRIMARY KEY | AUTO_INCREMENT|
+| name  | VARCHAR(255) |             |                |
+
+
+INSERT INTO roles (name) VALUES ('admin');
+INSERT INTO roles (name) VALUES ('manager');
+
+INSERT INTO users (email, role_id) VALUES ('sthorat1@hawl.iit.edu', (SELECT id FROM roles WHERE name = 'admin'));

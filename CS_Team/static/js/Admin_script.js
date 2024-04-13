@@ -72,19 +72,19 @@ async function logout() {
 
 async function fetchFileUploadContent() {
   try {
-    const response = await fetch('/CS_Team/templates/File_Upload.html');
+    const response = await fetch('File_Upload.html');
     const data = await response.text();
     const contentDiv = document.createElement('div');
     contentDiv.innerHTML = data;
     contentContainer.appendChild(contentDiv);
 
     const script1 = document.createElement('script');
-    script1.src = '/CS_Team/static/js/File_Upload_script.js';
+    script1.src = '/static/js/File_Upload_script.js';
     document.body.appendChild(script1);
 
     const style1 = document.createElement('link');
     style1.rel = 'stylesheet';
-    style1.href = '/CS_Team/static/css/File_Upload_styles.css';
+    style1.href = '/static/css/File_Upload_styles.css';
     document.head.appendChild(style1);
   } catch (error) {
     console.error('Error fetching file:', error);
