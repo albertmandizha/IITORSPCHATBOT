@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request, make_response
 import mysql.connector
 from flask_cors import CORS
+import os;
 
 app = Flask(__name__)
 CORS(app, origins=['*'])
@@ -41,4 +42,4 @@ def get_data(button_id):
         return jsonify(data)
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5001, debug=True, ssl_context=('D:/IITCHATBOTPRACTICUM2024/CS_Team/keys/cert.pem', 'D:/IITCHATBOTPRACTICUM2024/CS_Team/keys/key.pem'))
+    app.run(host='127.0.0.1', port=5001, debug=True, ssl_context=(os.path.join(os.path.dirname(__file__), 'keys', 'cert.pem'), os.path.join(os.path.dirname(__file__), 'keys', 'key.pem')))

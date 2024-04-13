@@ -160,4 +160,4 @@ def logout():
     return render_template('Login.html') 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5003, debug=True, ssl_context=('D:/IITCHATBOTPRACTICUM2024/CS_Team/keys/cert.pem', 'D:/IITCHATBOTPRACTICUM2024/CS_Team/keys/key.pem'))
+    app.run(host='127.0.0.1', port=5003, debug=True, ssl_context=(os.path.join(os.path.dirname(__file__), 'keys', 'cert.pem'), os.path.join(os.path.dirname(__file__), 'keys', 'key.pem')))
