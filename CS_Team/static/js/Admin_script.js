@@ -21,7 +21,7 @@ document.getElementById('chatbotusermanagement').addEventListener('click', manag
 
 
 function fetchData(buttonId, heading) {
-  fetch(`/get_data/${buttonId}`)
+  fetch(`http://127.0.0.1:5001/get_data/${buttonId}`)
     .then(response => response.json())
     .then(data => {
       let tableHTML = `<div class="table-container"><h2>${heading}</h2>`;
@@ -61,7 +61,7 @@ headerIcon.addEventListener('click', () => {
 
 async function logout() {
   try {
-    await fetch('http://127.0.0.1:5003/logout', {
+    await fetch('https://127.0.0.1:5003/logout', {
       method: 'GET',
     });
     window.location.href = '/';
@@ -91,12 +91,6 @@ async function fetchFileUploadContent() {
   }
 }
 
-function downloadQATable() {
-  const downloadLink = document.createElement('a');
-  downloadLink.href = '/download_qa_table';
-  downloadLink.download = 'qa_table.csv';
-  downloadLink.click();
-}
 
 document.getElementById('chatbotDemoBtn').addEventListener('click', openChatbotWindow);
 
@@ -120,7 +114,7 @@ function loadChatbotResources(chatbotWindow) {
 
 async function manageUsers() {
   try {
-    const response = await fetch('http://127.0.0.1:5003/manage_users');
+    const response = await fetch('https://127.0.0.1:5003/manage_users');
     const data = await response.json();
 
     let userManagementHTML = `
@@ -190,7 +184,7 @@ async function manageUsers() {
 async function showUpdateUserForm(event) {
   try {
     const userId = event.target.dataset.userId;
-    const response = await fetch(`http://127.0.0.1:5003/manage_users/${userId}`);
+    const response = await fetch(`https://127.0.0.1:5003/manage_users/${userId}`);
     const user = await response.json();
 
     let updateUserHTML = `
@@ -220,7 +214,7 @@ async function showUpdateUserForm(event) {
 async function showDeleteUserForm(event) {
   try {
     const userId = event.target.dataset.userId;
-    const response = await fetch(`http://127.0.0.1:5003/manage_users/${userId}`);
+    const response = await fetch(`https://127.0.0.1:5003/manage_users/${userId}`);
     const user = await response.json();
 
     let deleteUserHTML = `
@@ -249,7 +243,7 @@ async function handleUserManagementAction(event) {
   formData.append('action', form.classList.contains('create-user-form') ? 'create' : (form.classList.contains('update-user-form') ? 'update' : 'delete'));
 
   try {
-    await fetch('http://127.0.0.1:5003/manage_users', {
+    await fetch('https://127.0.0.1:5003/manage_users', {
       method: 'POST',
       body: formData
     });

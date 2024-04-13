@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IIT Chatbot Management</title>
-  <link rel="stylesheet" href="Manager_styles.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Manager_styles.css') }}">
 </head>
 <body>
   <div class="header">
@@ -25,6 +25,6 @@
   <div class="content-container">
   </div>
 
-  <script src="Manager_script.js"></script>
+  <script src="{{ url_for('static', filename='js/Manager_script.js') }}"></script>
 </body>
 </html>

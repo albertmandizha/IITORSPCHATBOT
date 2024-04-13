@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background-image: url('/CS_Team/static/images/back.png');
+    background-image: url('/static/images/back.png');
     background-size: cover;
     background-position: center;
 }
