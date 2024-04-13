@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIT Chatbot Login</title>
+    <link rel="stylesheet" href="/CS_Team/static/css/Login_style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-box">
+            <div class="buttons-container">
+                <button id="managerLoginBtn">Manager Login</button>
+                <button id="adminLoginBtn">Admin Login</button>
+            </div>
+            <p id="random-thought"></p>
+        </div>
+    </div>
+    <script src="/CS_Team/static/js/Login_script.js"></script>
+    <a href="https://127.0.0.1:5003/login?role=manager" id="googleManagerLoginBtn" style="display: none;"></a>
+    <a href="https://127.0.0.1:5003/login?role=admin" id="googleAdminLoginBtn" style="display: none;"></a>
+</body>
+</html>

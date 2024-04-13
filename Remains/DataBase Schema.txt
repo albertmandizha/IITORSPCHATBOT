@@ -1,0 +1,56 @@
+questions
+| Field         | Type         | Key         | Extra          |
+|---------------|--------------|-------------|----------------|
+| question_id   | INT          | PRIMARY KEY | AUTO_INCREMENT|
+| question_text | VARCHAR(255) |             |                |
+
+answers
+| Field        | Type         | Key         | Extra          |
+|--------------|--------------|-------------|----------------|
+| answer_id    | INT          | PRIMARY KEY | AUTO_INCREMENT|
+| question_id  | INT          | FOREIGN KEY |                |
+| answer_text  | VARCHAR(255) |             |                |
+
+options
+| Field       | Type         | Key         | Extra          |
+|-------------|--------------|-------------|----------------|
+| option_id   | INT          | PRIMARY KEY | AUTO_INCREMENT|
+| answer_id   | INT          | FOREIGN KEY |                |
+| option_text | VARCHAR(255) |             |                |
+| option_answer| TEXT         |             |                |
+
+tags
+| Field     | Type         | Key         | Extra          |
+|-----------|--------------|-------------|----------------|
+| tag_id    | INT          | PRIMARY KEY | AUTO_INCREMENT|
+| tag_name  | VARCHAR(50)  | UNIQUE      |                |
+
+question_tags
+| Field       | Type         | Key         | Extra          |
+|-------------|--------------|-------------|----------------|
+| question_id | INT          | FOREIGN KEY |                |
+| tag_id      | INT          | FOREIGN KEY |                |
+
+tag_responses
+| Field        | Type         | Key         | Extra          |
+|--------------|--------------|-------------|----------------|
+| response_id  | INT          | PRIMARY KEY | AUTO_INCREMENT|
+| tag_id       | INT          | FOREIGN KEY |                |
+| response_text| VARCHAR(255) |             |                |
+
+vectors
+| Field       | Type         | Key         | Extra          |
+|-------------|--------------|-------------|----------------|
+| id          | INT          | PRIMARY KEY | AUTO_INCREMENT|
+| question_id | INT          | FOREIGN KEY |                |
+| vector      | TEXT         |             |                |
+
+unanswered
+| Field        | Type         | Key         | Extra          |
+|--------------|--------------|-------------|----------------|
+| id           | INT          | PRIMARY KEY | AUTO_INCREMENT|
+| question     | VARCHAR(255) |             |                |
+| answer       | VARCHAR(255) |             |                |
+| tag          | VARCHAR(255) |             |                |
+| option_text  | VARCHAR(255) |             |                |
+| option_answer| TEXT         |             |                |

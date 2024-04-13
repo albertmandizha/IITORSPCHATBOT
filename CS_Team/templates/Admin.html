@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Admin_styles.css') }}"> <!-- Change the CSS link -->
+</head>
+<body>
+  <div class="header">
+    <h1>IIT Manager Management</h1>
+    <div class="header-icon">
+      <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="User Icon" width="30" height="30"> <!-- Change the image source -->
+    </div>
+  </div>
+
+  <div class="button-container">
+    <button id="fileBtn">File Upload</button>
+    <button id="chatResponsesBtn">Main</button>
+    <button id="tagTableBtn">Tag Table</button>
+    <button id="unansweredBtn">Unanswered</button>
+    <button id="chatbotDemoBtn">Chatbot</button>
+    <button id="chatbotusermanagement">Manage Users</button>
+  </div>
+  
+  <div class="content-container">
+  </div>
+
+  <script src="{{ url_for('static', filename='js/Admin_script.js') }}"></script>
+</body>
+</html>
