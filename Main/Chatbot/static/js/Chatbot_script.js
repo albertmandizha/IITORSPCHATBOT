@@ -21,7 +21,7 @@ const createChatLi = (message, className) => {
 };
 
 const generateResponse = (chatElement, userInput, isQuestion) => {
-  const API_URL = "http://localhost:5002/sendMessage";
+  const API_URL = "/sendMessage";
   const messageElement = chatElement.querySelector("p");
 
   // Clear any previous content in the message element
@@ -100,7 +100,7 @@ const handleUserMessage = () => {
 };
 
 const generateClientTopThree = (chatElement, userMessage) => {
-  const API_URL = "http://localhost:5002/clientTopThree";
+  const API_URL = "/clientTopThree";
   const messageElement = chatElement.querySelector("p");
 
   // Clear any previous content in the message element
@@ -175,7 +175,7 @@ const handleOptionClick = (option, answerId) => {
   chatbox.appendChild(outgoingChatLi);
   chatbox.scrollTo(0, chatbox.scrollHeight);
 
-  const API_URL = "http://localhost:5002/getOptionAnswer";
+  const API_URL = "/getOptionAnswer";
   const requestData = {
     answer_id: answerId,
     option_text: option,
@@ -225,7 +225,7 @@ const handleNoneOfTheAboveClick = () => {
 };
 
 const generateClientAns = (chatElement, userMessage) => {
-  const API_URL = "http://localhost:5002/clientAns";
+  const API_URL = "/clientAns";
   const messageElement = chatElement.querySelector("p");
 
   // Clear any previous content in the message element
@@ -300,15 +300,17 @@ chatbotToggler.addEventListener("click", () =>
 );
 
 const fetchTopTags = () => {
-  const API_URL = "http://localhost:5002/getToptags";
-
+  const API_URL = "/getToptags";
   fetch(API_URL)
     .then((response) => response.json())
     .then((data) => {
       const tagButtonsContainer = document.getElementById("tagButtons");
       tagButtonsContainer.innerHTML = ""; // Clear previous buttons
 
-      data.tags.forEach((tag) => {
+      // Extract the top 5 tags from the response
+      const topTags = data.tags.slice(0, 5);
+
+      topTags.forEach((tag) => {
         const button = document.createElement("button");
         button.textContent = tag.tag;
         button.classList.add("action-button");
@@ -335,7 +337,7 @@ const handleTagClick = (tag) => {
 };
 
 const generateTagQuestions = (chatElement, tag) => {
-  const API_URL = "http://localhost:5002/tagQuestions";
+  const API_URL = "/tagQuestions";
   const messageElement = chatElement.querySelector("p");
 
   // Clear any previous content in the message element

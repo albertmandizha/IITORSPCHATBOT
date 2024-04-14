@@ -112,9 +112,6 @@ async function startChatbot() {
     // Create the chatbot container HTML
     const chatbotContainerHTML = `
       <div class="chatbot-container">
-        <h2>Chatbot</h2>
-        <div class="chatbot-url-container">
-          <span class="chatbot-url">${data.chatbot_url}</span>
           <button class="open-chatbot-btn">Open</button>
         </div>
       </div>
@@ -208,7 +205,7 @@ async function handleFileSend() {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('https://127.0.0.1:5001/upload', {
+      const response = await fetch('https://127.0.0.1:5002/upload', {
         method: 'POST',
         body: formData,
       });

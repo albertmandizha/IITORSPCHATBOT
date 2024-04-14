@@ -77,9 +77,7 @@ async function startChatbot() {
     // Create the chatbot container HTML
     const chatbotContainerHTML = `
       <div class="chatbot-container">
-        <h2>Chatbot</h2>
         <div class="chatbot-url-container">
-          <span class="chatbot-url">${data.chatbot_url}</span>
           <button class="open-chatbot-btn">Open</button>
         </div>
       </div>
@@ -171,7 +169,7 @@ async function manageUsers() {
 async function showUpdateUserForm(event) {
   try {
     const userId = event.target.dataset.userId;
-    const response = await fetch(`https://127.0.0.1:5003/manage_users/${userId}`);
+    const response = await fetch(`https://127.0.0.1:5003/manage_users`);
     const user = await response.json();
 
     let updateUserHTML = `
@@ -201,7 +199,7 @@ async function showUpdateUserForm(event) {
 async function showDeleteUserForm(event) {
   try {
     const userId = event.target.dataset.userId;
-    const response = await fetch(`https://127.0.0.1:5003/manage_users/${userId}`);
+    const response = await fetch(`https://127.0.0.1:5003/manage_users`);
     const user = await response.json();
 
     let deleteUserHTML = `
@@ -295,20 +293,28 @@ function handleFileSelection() {
 async function handleFileSend() {
   const fileInput = document.getElementById('file-input');
   if (fileInput.files.length > 0) {
-    const selectedFile = fileInput.files[0];
     const formData = new FormData();
-    formData.append('file', selectedFile);
+    for (const file of fileInput.files) {
+      formData.append('files', file);
+    }
 
     try {
-      const response = await fetch('https://127.0.0.1:5001/upload', {
+      const response = await fetch('https://127.0.0.1:5002/upload', {
         method: 'POST',
         body: formData,
       });
-      const data = await response.json();
-      // Display the response from the server in the file upload box
-      alert(data.message);
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(data.message);
+        fileInput.value = ''; // Reset the file input
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.error}`);
+      }
     } catch (error) {
       console.error('Error uploading file:', error);
+      alert('An error occurred while uploading the file.');
     }
   }
 }

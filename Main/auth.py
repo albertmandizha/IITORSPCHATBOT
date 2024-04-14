@@ -149,16 +149,8 @@ def logout():
 
 @app.route('/start_chatbot', methods=['GET'])
 def start_chatbot():
-    # Run the Chatbot.py script in a separate thread
-    chatbot_thread = threading.Thread(target=run_chatbot)
-    chatbot_thread.start()
-
-    # Return the URL of the running chatbot
     return jsonify({'chatbot_url': 'https://127.0.0.1:5000'})
 
-def run_chatbot():
-    chatbot_script_path = os.path.join(os.path.dirname(__file__), 'Chatbot', 'Chatbot.py')
-    subprocess.run(['python', chatbot_script_path], check=True)
 
 if __name__ == '__main__':
     app.run(
