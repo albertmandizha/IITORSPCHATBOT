@@ -4,16 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/Admin_styles.css') }}"> <!-- Change the CSS link -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Admin_styles.css') }}">
 </head>
 <body>
   <div class="header">
     <h1>IIT Manager Management</h1>
     <div class="header-icon">
-      <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="User Icon" width="30" height="30"> <!-- Change the image source -->
+      <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="User Icon" width="30" height="30">
     </div>
   </div>
-
   <div class="button-container">
     <button id="fileBtn">File Upload</button>
     <button id="chatResponsesBtn">Main</button>
@@ -25,7 +24,6 @@
   
   <div class="content-container">
   </div>
-
   <script src="{{ url_for('static', filename='js/Admin_script.js') }}"></script>
 </body>
 </html>

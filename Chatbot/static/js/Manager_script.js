@@ -99,31 +99,6 @@ function generateTagTableHTML(data, heading) {
 }
 
 
-// Function to fetch content from a file and inject it into the content container
-function fetchFileUploadContent() {
-  const filePath = "CS_Team/templates/File_Upload.html";
-
-  fetch(filePath)
-    .then(response => response.text())
-    .then(data => {
-      const contentDiv = document.createElement('div');
-      contentDiv.innerHTML = data;
-      contentContainer.appendChild(contentDiv);
-
-      const script1 = document.createElement('script');
-      script1.src = 'CS_Team/templates/File_Upload_script.js';
-      document.body.appendChild(script1);
-
-      const style1 = document.createElement('link');
-      style1.rel = 'stylesheet';
-      style1.href = 'CS_Team/templates/File_Upload_styles.css';
-      document.head.appendChild(style1);
-    })
-    .catch(error => {
-      console.error('Error fetching file:', error);
-    });
-}
-
 // Event listener for chatbot demo button
 document.getElementById('chatbotDemoBtn').addEventListener('click', () => {
   openChatbotWindow();
@@ -168,3 +143,85 @@ async function logout() {
     console.error('Error logging out:', error);
   }
 }
+
+
+
+
+function createFileUploadBox() {
+  const fileUploadBox = document.createElement('div');
+  fileUploadBox.classList.add('file-upload-box');
+  fileUploadBox.innerHTML = `
+    <div class="file-input-container">
+      <label for="file-input" class="custom-file-input">Choose File</label>
+      <input type="file" id="file-input" accept=".txt, .csv" style="display: none;">
+    </div>
+    <div class="file-info">
+      <p>Selected file: <span id="file-name"></span></p>
+      <p>File size: <span id="file-size"></span></p>
+    </div>
+    <div class="button-container">
+      <button id="send-file-btn">Send</button>
+      <button id="exit-file-btn">Exit</button>
+    </div>
+  `;
+  contentContainer.innerHTML = '';
+  contentContainer.appendChild(fileUploadBox);
+
+  // Add event listeners for file input and buttons
+  const fileInput = document.getElementById('file-input');
+  const customFileInput = document.querySelector('.custom-file-input');
+  const sendFileBtn = document.getElementById('send-file-btn');
+  const exitFileBtn = document.getElementById('exit-file-btn');
+
+  customFileInput.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', handleFileSelection);
+  sendFileBtn.addEventListener('click', handleFileSend);
+  exitFileBtn.addEventListener('click', closeFileUploadBox);
+}
+
+// Function to handle file selection
+function handleFileSelection() {
+  const fileInput = document.getElementById('file-input');
+  const fileNameElement = document.getElementById('file-name');
+  const fileSizeElement = document.getElementById('file-size');
+
+  if (fileInput.files.length > 0) {
+    const selectedFile = fileInput.files[0];
+    fileNameElement.textContent = selectedFile.name;
+    fileSizeElement.textContent = `${(selectedFile.size / 1024).toFixed(2)} KB`;
+  } else {
+    fileNameElement.textContent = '';
+    fileSizeElement.textContent = '';
+  }
+}
+
+// Function to handle file upload
+async function handleFileSend() {
+  const fileInput = document.getElementById('file-input');
+  if (fileInput.files.length > 0) {
+    const selectedFile = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await fetch('https://127.0.0.1:5001/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      // Display the response from the server in the file upload box
+      alert(data.message);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  }
+}
+
+// Function to close the file upload box
+function closeFileUploadBox() {
+  const fileUploadBox = document.querySelector('.file-upload-box');
+  contentContainer.removeChild(fileUploadBox);
+}
+
+// Add event listener for the "File Upload" button
+document.getElementById('fileBtn').addEventListener('click', createFileUploadBox);

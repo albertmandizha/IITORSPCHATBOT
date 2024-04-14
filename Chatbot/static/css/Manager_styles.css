@@ -4,8 +4,8 @@ body {
   font-family: 'Roboto', sans-serif;
   background-color: #e6f2d9;
  }
- 
- .header {
+
+.header {
   background-color: #1877f2;
   color: #fff;
   padding: 10px;
@@ -16,8 +16,8 @@ body {
   animation: slideInDown 1s ease;
   position: relative; /* Added for menu icon animation */
  }
- 
- @keyframes slideInDown {
+
+@keyframes slideInDown {
   from {
     transform: translateY(-100%);
   }
@@ -25,15 +25,15 @@ body {
     transform: translateY(0);
   }
  }
- 
- .header h1 {
+
+.header h1 {
   margin: 0;
   font-size: 1.8rem;
   text-align: center;
   animation: fadeIn 1s ease; /* Fade-in animation for heading */
  }
- 
- @keyframes fadeIn {
+
+@keyframes fadeIn {
   from {
     opacity: 0;
   }
@@ -41,14 +41,14 @@ body {
     opacity: 1;
   }
  }
- 
- .header-icon {
+
+.header-icon {
   cursor: pointer;
   font-size: 1.5rem;
   animation: rotateMenu 1s ease; /* Rotate animation for menu icon */
  }
- 
- @keyframes rotateMenu {
+
+@keyframes rotateMenu {
   from {
     transform: rotate(0deg);
   }
@@ -56,8 +56,8 @@ body {
     transform: rotate(360deg);
   }
  }
- 
- .button-container {
+
+.button-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,8 +65,8 @@ body {
   flex-wrap: wrap;
   margin: 10px;
  }
- 
- .button-container button {
+
+.button-container button {
   margin: 10px;
   padding: 12px 24px;
   font-size: 1.2rem;
@@ -79,8 +79,8 @@ body {
   transition: background-color 0.3s ease;
   animation: slideInUp 1s ease;
  }
- 
- @keyframes slideInUp {
+
+@keyframes slideInUp {
   from {
     transform: translateY(100%);
   }
@@ -88,12 +88,12 @@ body {
     transform: translateY(0);
   }
  }
- 
- .button-container button:hover {
+
+.button-container button:hover {
   background-color: #135e96;
  }
- 
- .content-container {
+
+.content-container {
   height: 70vh;
   width: 80%;
   margin: 20px auto 0;
@@ -110,22 +110,18 @@ body {
   background: linear-gradient(to bottom, #fff, #f8f9fa);
   animation: fadeIn 1s ease;
  }
- 
- .table-container {
+
+.table-container {
   width: 100%;
   overflow-x: auto;
  }
- 
- .download-button-container,
- .file-button-container {
-  text-align: center;
-  margin-top: 10px;
- }
- 
- .file-button-container button {
-  margin: 0 10px;
-  padding: 10px 20px;
-  font-size: 1rem;
+
+button,
+#chatbotusermanagement,
+#deployBtn {
+  margin: 10px;
+  padding: 12px 24px;
+  font-size: 1.2rem;
   background-color: #1877f2;
   color: #fff;
   border: none;
@@ -133,8 +129,75 @@ body {
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
- }
- 
- .file-button-container button:hover {
+  animation: slideInUp 1s ease;
+}
+
+.file-upload-box {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 60%;
+  max-width: 600px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease;
+}
+
+.file-upload-box h2 {
+  text-align: center;
+  margin-top: 0;
+  color: #333;
+  font-size: 2rem;
+  animation: slideInDown 0.5s ease;
+}
+
+.file-upload-box .file-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  animation: slideInUp 0.5s ease;
+}
+
+.file-upload-box input[type="file"] {
+  display: none;
+}
+
+.file-upload-box .custom-file-input {
+  background-color: #1877f2;
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.file-upload-box .custom-file-input:hover {
   background-color: #135e96;
- }
+}
+
+.file-info {
+  text-align: center;
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+.file-upload-box .button-container {
+  display: flex;
+  justify-content: center;
+  animation: slideInUp 0.5s ease;
+}
+
+.file-upload-box button {
+  margin: 0 10px;
+}
+
+/* Hover styles for all buttons */
+button:hover,
+#chatbotusermanagement:hover,
+#deployBtn:hover {
+  background-color: #135e96; /* Darker blue on hover */
+}
