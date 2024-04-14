@@ -3,8 +3,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import time
 from sentence_transformers import SentenceTransformer
+from flask import render_template
 import torch
 import numpy as np
+import os
 
 app = Flask(__name__)
 CORS(app, origins=['*'])
@@ -16,6 +18,11 @@ conn = mysql.connector.connect(host="localhost", user="root", passwd="sahil11", 
 # Load the SentenceTransformer model
 model_name = 'all-MiniLM-L6-v2'
 model = SentenceTransformer(model_name)
+
+
+@app.route('/')
+def index():
+    return render_template('Chatbot.html')
 
 @app.route('/getToptags', methods=['GET'])
 def get_top_tags():
@@ -275,4 +282,12 @@ def get_option_answer():
 
 
 if __name__ == '__main__':
-    app.run(debug=True,port=5000)
+    app.run(
+        host='127.0.0.1',
+        port=5000,
+        debug=True,
+        ssl_context=(
+            os.path.join(os.path.dirname(__file__), 'keys', 'cert.pem'),
+            os.path.join(os.path.dirname(__file__), 'keys', 'key.pem')
+        )
+    )

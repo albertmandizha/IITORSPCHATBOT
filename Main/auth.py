@@ -6,6 +6,8 @@ from flask_cors import CORS
 import os
 import mysql.connector
 import json
+import subprocess
+import threading
 
 app = Flask(__name__)
 app.secret_key = 'IITORSP@CHATBOT'
@@ -37,7 +39,7 @@ def get_user_id_by_email(email):
 def index():
     return render_template('Login.html')
 
-with open('Chatbot/keys/client_secret.json', 'r') as file:
+with open('Main/keys/client_secret.json', 'r') as file:
     client_secret = json.load(file)
 
 CLIENT_ID = client_secret['web']['client_id']
@@ -49,7 +51,7 @@ SCOPES = ['openid', 'https://www.googleapis.com/auth/userinfo.email']
 def login():
     role = request.args.get('role')
     flow = Flow.from_client_secrets_file(
-        'Chatbot/keys/client_secret.json',
+        'Main/keys/client_secret.json',
         scopes=SCOPES,
         redirect_uri=CALLBACK_URI
     )
@@ -69,7 +71,7 @@ def callback():
         return 'State parameter is missing', 400
 
     flow = Flow.from_client_secrets_file(
-        'Chatbot/keys/client_secret.json',
+        'Main/keys/client_secret.json',
         scopes=SCOPES,
         redirect_uri=CALLBACK_URI
     )
@@ -144,6 +146,19 @@ def manage_users():
 def logout():
     session.clear()
     return render_template('Login.html')
+
+@app.route('/start_chatbot', methods=['GET'])
+def start_chatbot():
+    # Run the Chatbot.py script in a separate thread
+    chatbot_thread = threading.Thread(target=run_chatbot)
+    chatbot_thread.start()
+
+    # Return the URL of the running chatbot
+    return jsonify({'chatbot_url': 'https://127.0.0.1:5000'})
+
+def run_chatbot():
+    chatbot_script_path = os.path.join(os.path.dirname(__file__), 'Chatbot', 'Chatbot.py')
+    subprocess.run(['python', chatbot_script_path], check=True)
 
 if __name__ == '__main__':
     app.run(

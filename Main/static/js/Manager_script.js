@@ -98,34 +98,40 @@ function generateTagTableHTML(data, heading) {
   return tableHTML;
 }
 
-
-// Event listener for chatbot demo button
 document.getElementById('chatbotDemoBtn').addEventListener('click', () => {
-  openChatbotWindow();
+  startChatbot();
 });
 
-// Function to open chatbot window
-function openChatbotWindow() {
-  const chatbotWindow = window.open('/Chatbot team/index.html', '_blank');
-  chatbotWindow.onload = () => {
-    loadChatbotResources(chatbotWindow);
-  };
+async function startChatbot() {
+  try {
+    const response = await fetch('https://127.0.0.1:5003/start_chatbot', {
+      method: 'GET',
+    });
+    const data = await response.json();
+
+    // Create the chatbot container HTML
+    const chatbotContainerHTML = `
+      <div class="chatbot-container">
+        <h2>Chatbot</h2>
+        <div class="chatbot-url-container">
+          <span class="chatbot-url">${data.chatbot_url}</span>
+          <button class="open-chatbot-btn">Open</button>
+        </div>
+      </div>
+    `;
+
+    // Add the chatbot container to the contentContainer
+    contentContainer.innerHTML = chatbotContainerHTML;
+
+    // Add event listener for the "Open" button
+    const openChatbotBtn = document.querySelector('.open-chatbot-btn');
+    openChatbotBtn.addEventListener('click', () => {
+      window.open(data.chatbot_url, '_blank');
+    });
+  } catch (error) {
+    console.error('Error starting chatbot:', error);
+  }
 }
-
-// Function to load chatbot resources into the new window
-function loadChatbotResources(chatbotWindow) {
-  const script1 = chatbotWindow.document.createElement('script');
-  script1.src = '/Chatbot team/script.js';
-  chatbotWindow.document.body.appendChild(script1);
-
-  const style1 = chatbotWindow.document.createElement('link');
-  style1.rel = 'stylesheet';
-  style1.href = '/Chatbot team/styles.css';
-  chatbotWindow.document.head.appendChild(style1);
-
-  // Add more resources (CSS, JS, etc.) as needed
-}
-
 headerIcon.addEventListener('click', () => {
   const confirmLogout = confirm('Do you really want to logout?');
   if (confirmLogout) {
@@ -138,13 +144,11 @@ async function logout() {
     await fetch('https://127.0.0.1:5003/logout', {
       method: 'GET',
     });
-    window.location.href = 'CS_Team/Login.html';
+    window.location.href = '/';
   } catch (error) {
     console.error('Error logging out:', error);
   }
 }
-
-
 
 
 function createFileUploadBox() {
