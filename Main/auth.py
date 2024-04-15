@@ -7,10 +7,10 @@ import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
 from functools import wraps
-from config import Config
+
 
 app = Flask(__name__)
-app.config.from_object(Config)
+app.secret_key = 'IITORSP@CHATBOT'
 CORS(app)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
