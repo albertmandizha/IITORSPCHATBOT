@@ -6,8 +6,6 @@ from flask_cors import CORS
 import os
 import mysql.connector
 import json
-import subprocess
-import threading
 
 app = Flask(__name__)
 app.secret_key = 'IITORSP@CHATBOT'
@@ -21,7 +19,19 @@ conn = mysql.connector.connect(
     passwd="sahil11",
     db="pj"
 )
-cursor = conn.cursor(dictionary=True)
+
+def execute_query(query, params=None, fetch_all=False):
+    try:
+        with conn.cursor(dictionary=True) as cursor:
+            cursor.execute(query, params)
+            if fetch_all:
+                result = cursor.fetchall()
+            else:
+                result = cursor.fetchone()
+            return result
+    except mysql.connector.Error as err:
+        print(f"Error executing query: {err}")
+        return None
 
 def check_role(required_role):
     if 'role' not in session:
@@ -31,8 +41,7 @@ def check_role(required_role):
     return None
 
 def get_user_id_by_email(email):
-    cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
-    result = cursor.fetchone()
+    result = execute_query("SELECT id FROM users WHERE email = %s", (email,))
     return result['id'] if result else None
 
 @app.route('/')
@@ -99,10 +108,9 @@ def Admin():
     if error:
         return error
 
-    cursor.execute("SELECT u.id, u.email, r.name AS role_name FROM users u JOIN roles r ON u.role_id = r.id")
-    users = cursor.fetchall()
-    cursor.execute("SELECT id, name FROM roles")
-    roles = cursor.fetchall()
+    users = execute_query("SELECT u.id, u.email, r.name AS role_name FROM users u JOIN roles r ON u.role_id = r.id", fetch_all=True)
+    roles = execute_query("SELECT id, name FROM roles", fetch_all=True)
+
     return render_template('Admin.html', users=users, roles=roles)
 
 @app.route('/manager_dashboard')
@@ -142,10 +150,15 @@ def manage_users():
     roles = cursor.fetchall()
     return jsonify({'users': users, 'roles': roles})
 
+cursor = conn.cursor(dictionary=True)
+
 @app.route('/logout')
 def logout():
     session.clear()
+    cursor.close()  # Close the cursor
+    conn.close()    # Close the connection
     return render_template('Login.html')
+
 
 @app.route('/start_chatbot', methods=['GET'])
 def start_chatbot():
