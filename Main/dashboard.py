@@ -14,21 +14,20 @@ cursor = conn.cursor()
 def get_data(button_id):
     if button_id == 'chatResponsesBtn':
         cursor.execute("""
-            SELECT
-                q.question_text,
-                a.answer_text,
-                GROUP_CONCAT(DISTINCT t.tag_name SEPARATOR ', ') AS tags,
-                o.option_text
-            FROM
-                questions q
-                LEFT JOIN answers a ON q.question_id = a.question_id
-                LEFT JOIN options o ON a.answer_id = o.answer_id
-                LEFT JOIN question_tags qt ON q.question_id = qt.question_id
-                LEFT JOIN tags t ON qt.tag_id = t.tag_id
-            GROUP BY
-                q.question_text,
-                a.answer_text,
-                o.option_text;
+    SELECT
+        q.question_text,
+        a.answer_text,
+        GROUP_CONCAT(DISTINCT t.tag_name SEPARATOR ', ') AS tags,
+        GROUP_CONCAT(CONCAT(o.option_text, ':', IFNULL(o.option_answer, '')) SEPARATOR ';') AS options
+    FROM
+        questions q
+        LEFT JOIN answers a ON q.question_id = a.question_id
+        LEFT JOIN options o ON a.answer_id = o.answer_id
+        LEFT JOIN question_tags qt ON q.question_id = qt.question_id
+        LEFT JOIN tags t ON qt.tag_id = t.tag_id
+    GROUP BY
+        q.question_text,
+        a.answer_text;
         """)
         data = cursor.fetchall()
         return jsonify(data)

@@ -58,17 +58,9 @@ function displayRandomThought() {
 displayRandomThought();
 
 // Function to trigger manager login
-function triggerManagerLogin() {
-    document.getElementById("googleManagerLoginBtn").click();
+function triggerLogin() {
+    document.getElementById("googleLoginBtn").click();
 }
+document.getElementById("LoginBtn").addEventListener("click", triggerLogin);
 
-// Function to trigger admin login
-function triggerAdminLogin() {
-    document.getElementById("googleAdminLoginBtn").click();
-}
 
-// Add event listener for manager login button
-document.getElementById("managerLoginBtn").addEventListener("click", triggerManagerLogin);
-
-// Add event listener for admin login button
-document.getElementById("adminLoginBtn").addEventListener("click", triggerAdminLogin);

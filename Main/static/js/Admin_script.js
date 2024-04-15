@@ -137,9 +137,9 @@ async function manageUsers() {
           <label for="new-email">Email:</label>
           <input type="email" id="new-email" name="email" required>
           <label for="new-role">Role:</label>
-          <select id="new-role" name="role_id" required>
-            <option value="">Select Role</option>
-            ${data.roles.map(role => `<option value="${role.id}">${role.name}</option>`).join('')}
+          <select id="new-role" name="role" required>
+            <option value="Admin">Admin</option>
+            <option value="Manager">Manager</option>
           </select>
           <button type="submit">Create</button>
         </form>
@@ -170,52 +170,60 @@ async function showUpdateUserForm(event) {
   try {
     const userId = event.target.dataset.userId;
     const response = await fetch(`https://127.0.0.1:5003/manage_users`);
-    const user = await response.json();
+    const users = await response.json();
+    const user = users.users.find(u => u.id === parseInt(userId));
 
-    let updateUserHTML = `
-      <h3>Update User</h3>
-      <form class="update-user-form">
-        <input type="hidden" name="user_id" value="${user.id}">
-        <label for="update-email">Email:</label>
-        <input type="email" id="update-email" name="email" value="${user.email}" required>
-        <label for="update-role">Role:</label>
-        <select id="update-role" name="role_id" required>
-          <option value="">Select Role</option>
-          ${data.roles.map(role => `<option value="${role.id}" ${role.id === user.role_id ? 'selected' : ''}>${role.name}</option>`).join('')}
-        </select>
-        <button type="submit">Update</button>
-      </form>
-    `;
+    if (user) {
+      const rolesResponse = await fetch(`https://127.0.0.1:5003/manage_users`);
+      const { roles } = await rolesResponse.json();
 
-    contentContainer.innerHTML = updateUserHTML;
-
-    const updateUserForm = document.querySelector('.update-user-form');
-    updateUserForm.addEventListener('submit', handleUserManagementAction);
+      let updateUserHTML = `
+        <h3>Update User</h3>
+        <form class="update-user-form">
+          <input type="hidden" name="user_id" value="${user.id}">
+          <label for="update-email">Email:</label>
+          <input type="email" id="update-email" name="email" value="${user.email}" required>
+          <label for="update-role">Role:</label>
+          <select id="update-role" name="role" required>
+            <option value="">Select Role</option>
+            ${roles.map(role => `<option value="${role.name}" ${role.name === user.role_name ? 'selected' : ''}>${role.name}</option>`).join('')}
+          </select>
+          <button type="submit">Update</button>
+        </form>
+      `;
+      contentContainer.innerHTML = updateUserHTML;
+      const updateUserForm = document.querySelector('.update-user-form');
+      updateUserForm.addEventListener('submit', handleUserManagementAction);
+    } else {
+      console.error('User not found');
+    }
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
 }
-
 async function showDeleteUserForm(event) {
   try {
-    const userId = event.target.dataset.userId;
     const response = await fetch(`https://127.0.0.1:5003/manage_users`);
-    const user = await response.json();
+    const users = await response.json();
+    const userId = event.target.dataset.userId;
+    const user = users.users.find(u => u.id === parseInt(userId));
 
-    let deleteUserHTML = `
-      <h3>Delete User</h3>
-      <p>Are you sure you want to delete the user with email "${user.email}"?</p>
-      <form class="delete-user-form">
-        <input type="hidden" name="user_id" value="${user.id}">
-        <button type="submit">Delete</button>
-        <button type="button" onclick="manageUsers()">Cancel</button>
-      </form>
-    `;
-
-    contentContainer.innerHTML = deleteUserHTML;
-
-    const deleteUserForm = document.querySelector('.delete-user-form');
-    deleteUserForm.addEventListener('submit', handleUserManagementAction);
+    if (user) {
+      let deleteUserHTML = `
+        <h3>Delete User</h3>
+        <p>Are you sure you want to delete the user with email "${user.email}"?</p>
+        <form class="delete-user-form">
+          <input type="hidden" name="user_id" value="${user.id}">
+          <button type="submit">Delete</button>
+          <button type="button" onclick="manageUsers()">Cancel</button>
+        </form>
+      `;
+      contentContainer.innerHTML = deleteUserHTML;
+      const deleteUserForm = document.querySelector('.delete-user-form');
+      deleteUserForm.addEventListener('submit', handleUserManagementAction);
+    } else {
+      console.error('User not found');
+    }
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
