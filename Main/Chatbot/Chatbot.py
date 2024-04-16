@@ -16,8 +16,9 @@ CORS(app, allow_headers=['Content-Type', 'Authorization'])
 conn = mysql.connector.connect(host="localhost", user="root", passwd="sahil11", db="pj")
 
 # Load the SentenceTransformer model
-model_name = 'all-MiniLM-L6-v2'
-model = SentenceTransformer(model_name)
+
+global_model = None
+
 
 
 @app.route('/')
@@ -154,7 +155,7 @@ def client_top_three():
         question_embeddings = torch.stack(embeddings)
 
         # Encode user question and find top matches
-        user_question_embedding = model.encode([user_question])[0]
+        user_question_embedding = global_model.encode([user_question])[0]
         user_question_embedding = torch.tensor(user_question_embedding).unsqueeze(0)
         cosine_similarities = torch.nn.functional.cosine_similarity(user_question_embedding, question_embeddings, dim=1).numpy()
         top_matches_indices = np.argsort(cosine_similarities)[-4:][::-1]
@@ -180,6 +181,20 @@ def client_top_three():
         if top_matches:
             response = {'questions': top_matches + ['None of the Above']}
         else:
+            # Save the unanswered question
+            try:
+                cursor = conn.cursor()
+                insert_query = "INSERT INTO unanswered (question) VALUES (%s)"
+                values = (user_question,)
+                cursor.execute(insert_query, values)
+                conn.commit()
+                cursor.close()
+            except Exception as e:
+                print(f"Error: {e}")
+                conn.rollback()
+            finally:
+                conn.consume_results()
+
             response = {
                 'answer': "Please email admission@iit.edu for assistance.",
                 'options': []
@@ -231,8 +246,8 @@ def client_ans():
         # Save the unanswered question
         try:
             cursor = conn.cursor()
-            insert_query = "INSERT INTO unanswered (question, answer) VALUES (%s, %s)"
-            values = (question, "Please email admission@iit.edu for assistance.")
+            insert_query = "INSERT INTO unanswered (question) VALUES (%s)"
+            values = (question,)
             cursor.execute(insert_query, values)
             conn.commit()
             cursor.close()
@@ -282,6 +297,11 @@ def get_option_answer():
 
 
 if __name__ == '__main__':
+    # Preload and initialize the SentenceTransformer model
+    print("Loading SentenceTransformer model...")
+    global_model = SentenceTransformer('all-MiniLM-L6-v2')
+    print("SentenceTransformer model loaded.")
+
     app.run(
         host='127.0.0.1',
         port=5000,
