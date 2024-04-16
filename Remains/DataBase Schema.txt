@@ -2,14 +2,14 @@ questions
 | Field         | Type         | Key         | Extra          |
 |---------------|--------------|-------------|----------------|
 | question_id   | INT          | PRIMARY KEY | AUTO_INCREMENT|
-| question_text | VARCHAR(255) |             |                |
+| question_text | TEXT|             |                |
 
 answers
 | Field        | Type         | Key         | Extra          |
 |--------------|--------------|-------------|----------------|
 | answer_id    | INT          | PRIMARY KEY | AUTO_INCREMENT|
 | question_id  | INT          | FOREIGN KEY |                |
-| answer_text  | VARCHAR(255) |             |                |
+| answer_text  | TEXT|             |                |
 
 options
 | Field       | Type         | Key         | Extra          |
@@ -49,19 +49,18 @@ unanswered
 | Field        | Type         | Key         | Extra          |
 |--------------|--------------|-------------|----------------|
 | id           | INT          | PRIMARY KEY | AUTO_INCREMENT|
-| question     | VARCHAR(255) |             |                |
-| answer       | VARCHAR(255) |             |                |
-| tag          | VARCHAR(255) |             |                |
-| option_text  | VARCHAR(255) |             |                |
+| question     | TEXT         |             |                |
+| answer       | TEXT         |             |                |
+| tag          | VARCHAR(50)  |             |                |
+| option_text  | VARCHAR(150) |             |                |
 | option_answer| TEXT         |             |                |
 
 users
-| Field   | Type         | Key         | Extra          |
-|---------|--------------|-------------|----------------|
-| id      | INT          | PRIMARY KEY | AUTO_INCREMENT|
-| email   | VARCHAR(255) |             |                |
-| role_id | INT          |             |                |
-|         | FOREIGN KEY  |             | REFERENCES roles(id) |
+| Field  | Type         | Key         | Extra |
+|--------|--------------|-------------|-------|
+| id     | INT          | PRIMARY KEY | AUTO_INCREMENT |
+| email  | VARCHAR(255) |             |       |
+| role   | ENUM('Admin', 'Manager') | |       |
 
 
 
@@ -69,8 +68,8 @@ users
 INSERT INTO roles (name) VALUES ('Admin');
 INSERT INTO roles (name) VALUES ('Manager');
 
-INSERT INTO users (email, role_id) VALUES ('YOUR_EMAIL_ID@hawk.iit.edu', (SELECT id FROM roles WHERE name = 'Admin'));
-INSERT INTO users (email, role_id) VALUES ('YOUR_EMAIL_ID@hawk.iit.edu', (SELECT id FROM roles WHERE name = 'Manager'));
+INSERT INTO users (email, role) VALUES ('YOUR_EMAIL_ID@hawk.iit.edu','Admin');
+INSERT INTO users (email, role) VALUES ('YOUR_EMAIL_ID@hawk.iit.edu','Manager');
 
 
 Need to create 'sessions' folder in Main folder.
