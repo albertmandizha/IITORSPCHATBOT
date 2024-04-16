@@ -17,8 +17,7 @@ conn = mysql.connector.connect(host="localhost", user="root", passwd="sahil11", 
 ALLOWED_EXTENSIONS = {'csv', 'txt'}
 
 # Load the SentenceTransformer model
-model_name = 'all-MiniLM-L6-v2'
-model = SentenceTransformer(model_name)
+global_model = None
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -84,7 +83,7 @@ def parse_txt(file_content):
 
 def encode_and_save_vectors(question_id, question_text):
     # Encode the question
-    question_embedding = model.encode([question_text])[0]
+    question_embedding = global_model.encode([question_text])[0]
     
     # Convert to string to save in the database
     question_vector_str = ','.join(map(str, question_embedding.tolist()))
@@ -140,13 +139,18 @@ def insert_into_database(data):
     finally:
         cursor.close()
 
+
+
 def trigger_app_rerun():
-    os.system("python3 dashboard.py")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    dashboard_path = os.path.join(current_dir, "dashboard.py")
+    os.system("python3 " + dashboard_path)
 
 class AppRerunEventHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.src_path.endswith("dashboard.py"):
             trigger_app_rerun()
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -186,6 +190,9 @@ def upload_file():
         return jsonify(response_data), 400
 
 if __name__ == "__main__":
+    print("Loading SentenceTransformer model...")
+    global_model = SentenceTransformer('all-MiniLM-L6-v2')
+    print("SentenceTransformer model loaded.")
     observer = Observer()
     observer.schedule(AppRerunEventHandler(), path=".", recursive=False)
     observer.start()
