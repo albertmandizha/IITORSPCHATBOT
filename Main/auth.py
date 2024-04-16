@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 from config import Config
+import os
 
 
 app = Flask(__name__)
@@ -92,10 +93,12 @@ def get_user_role(email):
 def index():
     return render_template('Login.html')
 
+
+import os
 @app.route('/login', methods=['GET'])
 def login():
     flow = Flow.from_client_secrets_file(
-        'Main/keys/client_secret.json',
+        os.path.join('Main', 'keys', 'client_secret.json'),
         scopes=['openid', 'https://www.googleapis.com/auth/userinfo.email'],
         redirect_uri=url_for('handle_callback', _external=True)
     )
@@ -113,7 +116,7 @@ def handle_callback():
         return 'State parameter is missing', 400
 
     flow = Flow.from_client_secrets_file(
-        'Main/keys/client_secret.json',
+        os.path.join('Main', 'keys', 'client_secret.json'),
         scopes=['openid', 'https://www.googleapis.com/auth/userinfo.email'],
         redirect_uri=url_for('handle_callback', _external=True)
     )
