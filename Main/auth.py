@@ -98,7 +98,7 @@ import os
 @app.route('/login', methods=['GET'])
 def login():
     flow = Flow.from_client_secrets_file(
-        os.path.join('Main', 'keys', 'client_secret.json'),
+        os.path.join(os.path.dirname(__file__), 'keys', 'client_secret.json'),
         scopes=['openid', 'https://www.googleapis.com/auth/userinfo.email'],
         redirect_uri=url_for('handle_callback', _external=True)
     )
@@ -116,7 +116,7 @@ def handle_callback():
         return 'State parameter is missing', 400
 
     flow = Flow.from_client_secrets_file(
-        os.path.join('Main', 'keys', 'client_secret.json'),
+        os.path.join(os.path.dirname(__file__), 'keys', 'client_secret.json'),
         scopes=['openid', 'https://www.googleapis.com/auth/userinfo.email'],
         redirect_uri=url_for('handle_callback', _external=True)
     )
@@ -232,7 +232,7 @@ if __name__ == '__main__':
         port=5003,
         debug=True,
         ssl_context=(
-            'D:/IITCHATBOTPRACTICUM2024/CS_Team/keys/cert.pem',
-            'D:/IITCHATBOTPRACTICUM2024/CS_Team/keys/key.pem'
+            os.path.join(os.path.dirname(__file__), 'keys', 'cert.pem'),
+            os.path.join(os.path.dirname(__file__), 'keys', 'key.pem')
         )
     )
