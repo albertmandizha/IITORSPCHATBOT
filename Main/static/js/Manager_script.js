@@ -148,6 +148,7 @@ async function logout() {
 }
 
 
+
 function createFileUploadBox() {
   const fileUploadBox = document.createElement('div');
   fileUploadBox.classList.add('file-upload-box');
@@ -196,24 +197,33 @@ function handleFileSelection() {
   }
 }
 
+
 // Function to handle file upload
 async function handleFileSend() {
   const fileInput = document.getElementById('file-input');
   if (fileInput.files.length > 0) {
     const selectedFile = fileInput.files[0];
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-
     try {
+      const formData = new FormData();
+      formData.append('files', selectedFile, selectedFile.name);
+
       const response = await fetch('https://127.0.0.1:5002/upload', {
         method: 'POST',
         body: formData,
       });
-      const data = await response.json();
-      // Display the response from the server in the file upload box
-      alert(data.message);
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(data.message);
+        fileInput.value = ''; // Reset the file input
+      } else {
+        const error = await response.json();
+        console.error('Error uploading file:', error);
+        alert(`Error: ${error.error || 'An unknown error occurred.'}`);
+      }
     } catch (error) {
       console.error('Error uploading file:', error);
+      alert('An error occurred while uploading the file. Please check the server logs for more information.');
     }
   }
 }
