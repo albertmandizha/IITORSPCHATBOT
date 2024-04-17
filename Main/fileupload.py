@@ -6,6 +6,7 @@ import mysql.connector
 from sentence_transformers import SentenceTransformer
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+import subprocess
 
 app = Flask(__name__)
 CORS(app, origins=['*'])
@@ -14,13 +15,11 @@ CORS(app, allow_headers=['Content-Type', 'Authorization'])
 # MySQL database
 conn = mysql.connector.connect(host="localhost", user="root", passwd="sahil11", db="pj")
 
-ALLOWED_EXTENSIONS = {'csv', 'txt'}
-
 # Load the SentenceTransformer model
 global_model = None
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return filename.endswith('.csv') or filename.endswith('.txt')
 
 def parse_csv(file_content):
     parsed_data = []
@@ -139,18 +138,15 @@ def insert_into_database(data):
     finally:
         cursor.close()
 
-
-
 def trigger_app_rerun():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     dashboard_path = os.path.join(current_dir, "dashboard.py")
-    os.system("python3 " + dashboard_path)
+    subprocess.Popen(["python3", dashboard_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 class AppRerunEventHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.src_path.endswith("dashboard.py"):
             trigger_app_rerun()
-
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -164,7 +160,6 @@ def upload_file():
 
     success = False
     message = None
-
     for file_name, file_content in file_contents.items():
         if file_name.endswith('.csv'):
             success, parsed_data = parse_csv(file_content)
@@ -184,11 +179,12 @@ def upload_file():
 
     if success:
         response_data = {'message': message}
+        trigger_app_rerun()  # Trigger the rerun of dashboard.py after successful insertion
         return jsonify(response_data), 200
     else:
         response_data = {'error': message}
         return jsonify(response_data), 400
-
+    
 if __name__ == "__main__":
     print("Loading SentenceTransformer model...")
     global_model = SentenceTransformer('all-MiniLM-L6-v2')

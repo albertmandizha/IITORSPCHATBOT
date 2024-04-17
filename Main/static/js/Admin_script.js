@@ -297,16 +297,16 @@ function handleFileSelection() {
   }
 }
 
+
 // Function to handle file upload
 async function handleFileSend() {
   const fileInput = document.getElementById('file-input');
   if (fileInput.files.length > 0) {
-    const formData = new FormData();
-    for (const file of fileInput.files) {
-      formData.append('files', file);
-    }
-
+    const selectedFile = fileInput.files[0];
     try {
+      const formData = new FormData();
+      formData.append('files', selectedFile, selectedFile.name);
+
       const response = await fetch('https://127.0.0.1:5002/upload', {
         method: 'POST',
         body: formData,
@@ -318,11 +318,12 @@ async function handleFileSend() {
         fileInput.value = ''; // Reset the file input
       } else {
         const error = await response.json();
-        alert(`Error: ${error.error}`);
+        console.error('Error uploading file:', error);
+        alert(`Error: ${error.error || 'An unknown error occurred.'}`);
       }
     } catch (error) {
       console.error('Error uploading file:', error);
-      alert('An error occurred while uploading the file.');
+      alert('An error occurred while uploading the file. Please check the server logs for more information.');
     }
   }
 }
