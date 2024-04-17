@@ -1,2 +1,2 @@
-# IITCHATBOTPRACTICUM2024
+# IITCHATBOT
 We Intend to create a Chatbot For IIT
