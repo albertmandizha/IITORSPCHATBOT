@@ -62,5 +62,3 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (email, role) VALUES ('YOUR_EMAIL_ID@hawk.iit.edu','Admin');
-OR 
-INSERT INTO users (email, role) VALUES ('YOUR_EMAIL_ID@hawk.iit.edu','Manager');
