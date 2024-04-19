@@ -185,6 +185,72 @@ def upload_file():
         response_data = {'error': message}
         return jsonify(response_data), 400
     
+@app.route('/manual_entry', methods=['POST'])
+def manual_entry():
+    data = request.get_json()
+    print(data)
+    question = data.get('question')
+    answer = data.get('answer')
+    tags = data.get('tags', [])
+    options_str = data.get('options', '')
+
+    cursor = conn.cursor()
+    try:
+        # Insert the question
+        insert_question_query = "INSERT INTO questions (question_text) VALUES (%s)"
+        cursor.execute(insert_question_query, (question,))
+        question_id = cursor.lastrowid
+
+        # Encode and save the vector for the question
+        encode_and_save_vectors(question_id, question)
+
+        # Insert the answer
+        insert_answer_query = "INSERT INTO answers (question_id, answer_text) VALUES (%s, %s)"
+        cursor.execute(insert_answer_query, (question_id, answer))
+        answer_id = cursor.lastrowid
+
+        # Insert the options and option answers
+        if options_str:
+            options = options_str.split(';')
+            for option_pair in options:
+                option_text, option_answer = option_pair.split(':')
+                insert_option_query = "INSERT INTO options (answer_id, option_text, option_answer) VALUES (%s, %s, %s)"
+                cursor.execute(insert_option_query, (answer_id, option_text, option_answer))
+
+        # Insert the tags and associate them with the question
+        for tag_name in tags:
+            insert_tag_query = "INSERT IGNORE INTO tags (tag_name) VALUES (%s)"
+            cursor.execute(insert_tag_query, (tag_name,))
+
+            cursor.execute("SELECT tag_id FROM tags WHERE tag_name = %s", (tag_name,))
+            tag_id = cursor.fetchone()[0]
+
+            insert_question_tag_query = "INSERT INTO question_tags (question_id, tag_id) VALUES (%s, %s)"
+            cursor.execute(insert_question_tag_query, (question_id, tag_id))
+
+        conn.commit()
+        trigger_app_rerun()
+        return jsonify({'message': 'Data inserted into the database successfully'}), 200
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': f'Error inserting data into the database: {str(e)}'}), 400
+    finally:
+        cursor.close()
+
+def encode_and_save_vectors(question_id, question_text):
+    # Encode the question
+    question_embedding = global_model.encode([question_text])[0]
+    
+    # Convert to string to save in the database
+    question_vector_str = ','.join(map(str, question_embedding.tolist()))
+
+    # Insert the vector into the database
+    cursor = conn.cursor()
+    insert_vector_query = "INSERT INTO vectors (question_id, vector) VALUES (%s, %s)"
+    cursor.execute(insert_vector_query, (question_id, question_vector_str))
+    conn.commit()
+    cursor.close()
+
 if __name__ == "__main__":
     print("Loading SentenceTransformer model...")
     global_model = SentenceTransformer('all-MiniLM-L6-v2')

@@ -195,6 +195,27 @@ button,
   margin: 0 10px;
 }
 
+.manual-entry-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.input-row label {
+  width: 120px;
+  margin-right: 10px;
+  text-align: right;
+}
+
+.input-row input {
+  flex: 1;
+}
 /* Hover styles for all buttons */
 button:hover,
 #chatbotusermanagement:hover,

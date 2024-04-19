@@ -336,3 +336,138 @@ function closeFileUploadBox() {
 
 // Add event listener for the "File Upload" button
 document.getElementById('fileBtn').addEventListener('click', createFileUploadBox);
+
+
+
+document.getElementById('manualEntryBtn').addEventListener('click', showManualEntryForm);
+
+function showManualEntryForm() {
+  const manualEntryHTML = `
+    <div class="manual-entry-form">
+      <h2>Manual Entry</h2>
+      <div class="input-row">
+        <label for="question">Question:</label>
+        <input type="text" id="question" required>
+      </div>
+      <div class="input-row">
+        <label for="answer">Answer:</label>
+        <input type="text" id="answer" required>
+      </div>
+      <div class="input-row">
+        <label for="tags">Tags (comma-separated):</label>
+        <input type="text" id="tags">
+      </div>
+      <div id="option-container"></div>
+      <div class="button-row">
+        <button id="add-option">Add Option</button>
+        <button id="send-manual-entry">Send</button>
+      </div>
+    </div>
+  `;
+
+  contentContainer.innerHTML = manualEntryHTML;
+
+  const addOptionBtn = document.getElementById('add-option');
+  addOptionBtn.addEventListener('click', addOptionInput);
+
+  const sendManualEntryBtn = document.getElementById('send-manual-entry');
+  sendManualEntryBtn.addEventListener('click', sendManualEntryData);
+}
+
+let optionCount = 1;
+
+function addOptionInput() {
+  const optionContainer = document.getElementById('option-container');
+  const newOptionInput = document.createElement('div');
+  newOptionInput.classList.add('input-row');
+  newOptionInput.innerHTML = `
+    <label for="option-text-${optionCount}">Option Text:</label>
+    <input type="text" id="option-text-${optionCount}" required>
+    <label for="option-answer-${optionCount}">Option Answer:</label>
+    <input type="text" id="option-answer-${optionCount}" required>
+  `;
+  optionContainer.appendChild(newOptionInput);
+  optionCount++;
+}
+
+function addOptionInput() {
+  const optionContainer = document.getElementById('option-container');
+  const newOptionInput = document.createElement('div');
+  newOptionInput.classList.add('input-row');
+  newOptionInput.innerHTML = `
+    <label for="option-text-${optionCount}">Option Text:</label>
+    <input type="text" id="option-text-${optionCount}" required>
+    <label for="option-answer-${optionCount}">Option Answer:</label>
+    <input type="text" id="option-answer-${optionCount}" required>
+  `;
+  optionContainer.appendChild(newOptionInput);
+  optionCount++;
+}
+
+
+async function sendManualEntryData() {
+  const question = document.getElementById('question').value;
+  const answer = document.getElementById('answer').value;
+  const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim());
+  const optionInputs = document.querySelectorAll('.input-row');
+  const options = [];
+
+  optionInputs.forEach(input => {
+    const optionTextElement = input.querySelector('input[id^="option-text-"]');
+    const optionAnswerElement = input.querySelector('input[id^="option-answer-"]');
+
+    if (optionTextElement && optionAnswerElement) {
+      const optionText = optionTextElement.value;
+      const optionAnswer = optionAnswerElement.value;
+
+      if (optionText && optionAnswer) {
+        options.push(`${optionText}:${optionAnswer}`);
+      }
+    }
+  });
+
+  const data = {
+    question,
+    answer,
+    tags,
+    options: options.join(';')
+  };
+
+  try {
+    const response = await fetch('https://127.0.0.1:5002/manual_entry', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    if (response.ok) {
+      alert(result.message);
+      clearInputFields(); // Call the clearInputFields function
+    } else {
+      alert(`Error: ${result.error}`);
+    }
+  } catch (error) {
+    console.error('Error sending manual entry data:', error);
+    alert('An error occurred while sending the data. Please check the server logs for more information.');
+  }
+}
+
+function clearInputFields() {
+  document.getElementById('question').value = '';
+  document.getElementById('answer').value = '';
+  document.getElementById('tags').value = '';
+
+  const optionInputs = document.querySelectorAll('.input-row');
+  optionInputs.forEach(input => {
+    const optionTextElement = input.querySelector('input[id^="option-text-"]');
+    const optionAnswerElement = input.querySelector('input[id^="option-answer-"]');
+
+    if (optionTextElement && optionAnswerElement) {
+      optionTextElement.value = '';
+      optionAnswerElement.value = '';
+    }
+  });
+}
